@@ -58,7 +58,7 @@ jobs:
       - name: Keep the logs (and partial screenshots on failure) in the ci-log branch
         if: always() && (steps.shots.outcome == 'failure' || steps.shots.outcome == 'success')
         run: |
-          mkdir -p /tmp/log && cp -r instrument.log crash.log logcat.log perf.log /tmp/log/ 2>/dev/null || true
+          mkdir -p /tmp/log && cp -r instrument.log crash.log logcat.log perf.log checks /tmp/log/ 2>/dev/null || true
           if [ "${{ steps.shots.outcome }}" = failure ]; then cp -r docs/screens /tmp/log/ 2>/dev/null || true; fi
           cd /tmp/log
           git init -q -b ci-log

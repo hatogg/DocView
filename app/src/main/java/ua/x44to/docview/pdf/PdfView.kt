@@ -176,13 +176,19 @@ class PdfUi(val engine: PdfEngine, val file: File, start: Int, private val ctx: 
         totalS = 0
         val from = list.firstVisibleItemIndex
         job = scope.launch {
+            // стан Compose змінюємо лише з головного потоку: фоновий пошук пише прогрес у звичайне поле,
+            // а цей цикл переносить його в інтерфейс
+            var raw = 0f
+            val ticker = launch { while (true) { progressS = raw; delay(150) } }
             val res = withContext(Dispatchers.IO) {
                 try {
-                    PdfText.search(ctx, file, q, { i, n -> progressS = if (n > 0) i.toFloat() / n else 0f }, { !isActive })
+                    PdfText.search(ctx, file, q, { i, n -> raw = if (n > 0) i.toFloat() / n else 0f }, { !isActive })
                 } catch (_: Throwable) {
                     emptyList()
                 }
             }
+            ticker.cancel()
+            progressS = 1f
             hits = res
             totalS = res.size
             busyS = false

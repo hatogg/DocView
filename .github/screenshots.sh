@@ -27,6 +27,8 @@ mkdir -p docs/screens
 adb exec-out run-as ua.x44to.docview tar -cf - files/screens | tar -xf - -C docs/screens --strip-components=2
 ls -la docs/screens
 adb logcat -d -s DocView:D > perf.log || true
+mkdir -p checks
+adb exec-out run-as ua.x44to.docview tar -cf - files/checks | tar -xf - -C checks --strip-components=2 || true
 if [ "$ok" != 1 ]; then
   # для розбору: журнал падіння і що встигло знятися
   adb logcat -d -b crash > crash.log

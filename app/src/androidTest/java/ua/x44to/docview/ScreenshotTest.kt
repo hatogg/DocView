@@ -1,7 +1,9 @@
 package ua.x44to.docview
 
 import android.graphics.Bitmap
+import android.graphics.pdf.PdfRenderer
 import android.net.Uri
+import android.os.ParcelFileDescriptor
 import androidx.compose.ui.semantics.ProgressBarRangeInfo
 import androidx.compose.ui.test.hasProgressBarRangeInfo
 import androidx.compose.ui.test.hasSetTextAction
@@ -17,7 +19,10 @@ import androidx.test.platform.app.InstrumentationRegistry
 import org.junit.Rule
 import org.junit.Test
 import org.junit.runner.RunWith
+import ua.x44to.docview.core.Detect
+import ua.x44to.docview.core.Parser
 import ua.x44to.docview.data.L
+import ua.x44to.docview.export.Export
 import ua.x44to.docview.data.Opener
 import ua.x44to.docview.data.Store
 import ua.x44to.docview.data.t
@@ -109,7 +114,48 @@ class ScreenshotTest {
             }
         }
         shell("cmd uimode night no")
+        searchStress()
+        exportChecks()
         L.override = null
+    }
+
+    /** Пошук у PDF кілька разів поспіль: колись тут зрідка падало (стан Compose змінювався з фонового потоку). */
+    private fun searchStress() {
+        val pdf = asset("en", "guide.pdf")
+        ActivityScenario.launch(MainActivity::class.java).use { sc ->
+            settle()
+            open(pdf)
+            for (q in listOf("DocView", "PDF", "night", "zzz", "Word")) {
+                compose.onAllNodesWithContentDescription(t("Пошук", "Search")).onFirst().performClick()
+                settle(600)
+                compose.onNode(hasSetTextAction()).performTextInput(q)
+                compose.onNode(hasSetTextAction()).performImeAction()
+                settle(2500)
+                back(sc)
+            }
+            back(sc)
+        }
+    }
+
+    /** «Зберегти як PDF» для кожного формату: сторінки результату — у files/checks (для перевірки, не для README). */
+    private fun exportChecks() {
+        val dir = File(ctx.filesDir, "checks").apply { deleteRecursively(); mkdirs() }
+        for (file in listOf("report.docx", "budget.xlsx", "deck.pptx", "book.epub")) {
+            val src = File(asset("en", file).path!!)
+            val doc = Parser.open(src, src.name, Detect.of(src, src.name))
+            val pdf = File(ctx.cacheDir, "check-$file.pdf")
+            Export.toPdf(doc, "check-$file", pdf)
+            ParcelFileDescriptor.open(pdf, ParcelFileDescriptor.MODE_READ_ONLY).use { fd ->
+                PdfRenderer(fd).use { r ->
+                    for (i in 0 until minOf(r.pageCount, 2)) r.openPage(i).use { pg ->
+                        val bmp = Bitmap.createBitmap(pg.width * 2, pg.height * 2, Bitmap.Config.ARGB_8888)
+                        bmp.eraseColor(android.graphics.Color.WHITE)
+                        pg.render(bmp, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
+                        FileOutputStream(File(dir, "${file.substringBefore('.')}-p${i + 1}of${r.pageCount}.png")).use { bmp.compress(Bitmap.CompressFormat.PNG, 100, it) }
+                    }
+                }
+            }
+        }
     }
 
     private fun open(uri: Uri) {

@@ -1,0 +1,67 @@
+--------- beginning of main
+10-22 15:20:17.614  2449  2470 D DocView : import: 42 ms
+10-22 15:20:17.651  2449  2470 D DocView : import: 5 ms
+10-22 15:20:17.685  2449  2470 D DocView : import: 4 ms
+10-22 15:20:17.720  2449  2470 D DocView : import: 5 ms
+10-22 15:20:17.755  2449  2470 D DocView : import: 4 ms
+10-22 15:20:21.073  2449  2492 D DocView : import: 6 ms
+10-22 15:20:21.420  2449  2494 D DocView : pdf open: 143 ms
+10-22 15:20:22.984  2449  2495 D DocView : pdf render p0 w1080: 42 ms
+10-22 15:20:22.988  2449  2495 D DocView : pdf render p1 w1080: 4 ms
+10-22 15:20:23.031  2449  2470 D DocView : loaded in 64 ms
+10-22 15:20:33.277  2449  2494 D DocView : import: 8 ms
+10-22 15:20:33.725  2449  2494 D DocView : parse DOCX 41932 B: 331 ms
+10-22 15:20:35.127  2449  2470 D DocView : loaded in 15 ms
+10-22 15:20:37.189  2449  2494 D DocView : import: 4 ms
+10-22 15:20:37.378  2449  2494 D DocView : parse XLSX 6680 B: 76 ms
+10-22 15:20:39.039  2449  2470 D DocView : loaded in 13 ms
+10-22 15:20:41.085  2449  2494 D DocView : import: 5 ms
+10-22 15:20:41.254  2449  2494 D DocView : parse PPTX 36383 B: 67 ms
+10-22 15:20:42.939  2449  2470 D DocView : loaded in 16 ms
+10-22 15:20:44.984  2449  2493 D DocView : import: 10 ms
+10-22 15:20:45.108  2449  2493 D DocView : parse EPUB 10642 B: 30 ms
+10-22 15:20:46.724  2449  2470 D DocView : loaded in 2 ms
+10-22 15:20:52.102  2449  2493 D DocView : import: 4 ms
+10-22 15:20:52.225  2449  2493 D DocView : pdf open: 19 ms
+10-22 15:20:52.337  2449  2495 D DocView : pdf render p0 w1080: 36 ms
+10-22 15:20:52.343  2449  2495 D DocView : pdf render p1 w1080: 5 ms
+10-22 15:20:53.860  2449  2470 D DocView : loaded in 3 ms
+10-22 15:20:55.888  2449  2493 D DocView : import: 5 ms
+10-22 15:20:56.146  2449  2493 D DocView : parse DOCX 41932 B: 173 ms
+10-22 15:20:57.618  2449  2470 D DocView : loaded in 4 ms
+10-22 15:21:00.170  2449  2470 D DocView : import: 24 ms
+10-22 15:21:00.233  2449  2470 D DocView : import: 19 ms
+10-22 15:21:00.278  2449  2470 D DocView : import: 14 ms
+10-22 15:21:00.325  2449  2470 D DocView : import: 17 ms
+10-22 15:21:00.407  2449  2470 D DocView : import: 36 ms
+10-22 15:21:02.982  2449  2494 D DocView : import: 3 ms
+10-22 15:21:03.086  2449  2494 D DocView : pdf open: 13 ms
+10-22 15:21:03.200  2449  2495 D DocView : pdf render p0 w1080: 30 ms
+10-22 15:21:03.205  2449  2495 D DocView : pdf render p1 w1080: 4 ms
+10-22 15:21:04.721  2449  2470 D DocView : loaded in 3 ms
+10-22 15:21:14.114  2449  2494 D DocView : import: 5 ms
+10-22 15:21:14.309  2449  2494 D DocView : parse DOCX 41667 B: 113 ms
+10-22 15:21:15.869  2449  2470 D DocView : loaded in 5 ms
+10-22 15:21:17.857  2449  2494 D DocView : import: 5 ms
+10-22 15:21:17.999  2449  2494 D DocView : parse XLSX 6563 B: 60 ms
+10-22 15:21:19.615  2449  2470 D DocView : loaded in 12 ms
+10-22 15:21:21.596  2449  2494 D DocView : import: 5 ms
+10-22 15:21:21.723  2449  2494 D DocView : parse PPTX 36180 B: 49 ms
+10-22 15:21:23.293  2449  2470 D DocView : loaded in 7 ms
+10-22 15:21:25.273  2449  2494 D DocView : import: 4 ms
+10-22 15:21:25.392  2449  2494 D DocView : parse EPUB 9210 B: 35 ms
+10-22 15:21:26.974  2449  2470 D DocView : loaded in 3 ms
+10-22 15:21:32.174  2449  2494 D DocView : import: 5 ms
+10-22 15:21:32.279  2449  2494 D DocView : pdf open: 19 ms
+10-22 15:21:32.375  2449  2495 D DocView : pdf render p0 w1080: 34 ms
+10-22 15:21:32.380  2449  2495 D DocView : pdf render p1 w1080: 4 ms
+10-22 15:21:33.896  2449  2470 D DocView : loaded in 5 ms
+10-22 15:21:35.912  2449  2494 D DocView : import: 9 ms
+10-22 15:21:36.128  2449  2494 D DocView : parse DOCX 41667 B: 132 ms
+10-22 15:21:37.625  2449  2470 D DocView : loaded in 4 ms
+10-22 15:21:42.639  2449  2494 D DocView : import: 4 ms
+10-22 15:21:42.731  2449  2494 D DocView : pdf open: 11 ms
+10-22 15:21:42.826  2449  2495 D DocView : pdf render p0 w1080: 35 ms
+10-22 15:21:42.830  2449  2495 D DocView : pdf render p1 w1080: 3 ms
+10-22 15:21:44.345  2449  2470 D DocView : loaded in 4 ms
+10-22 15:22:04.041  2449  2494 D DocView : pdf outline: 59 ms

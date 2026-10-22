@@ -347,15 +347,15 @@ private fun ImageBlock(b: Image, doc: FlowDoc, docId: String, onImage: (String) 
     val bmp by produceState<Bitmap?>(null, b.key, docId) {
         value = withContext(Dispatchers.IO) { Bitmaps.get(docId, doc.res, b.key, 1600) }
     }
-    BoxWithConstraints(Modifier.fillMaxWidth().padding(vertical = 8.dp), contentAlignment = Alignment.Center) {
+    // без BoxWithConstraints: картинка може стояти в комірці таблиці, а там рядок міряється «інтринсиками»
+    Box(Modifier.fillMaxWidth().padding(vertical = 8.dp), contentAlignment = Alignment.Center) {
         val img = bmp
         if (img != null) {
             val ratio = img.width.toFloat() / img.height.coerceAtLeast(1)
-            val natural = b.w?.let { (it * 1.25f).dp } ?: maxWidth
-            val w = if (natural < maxWidth) natural else maxWidth
+            val w = b.w?.let { Modifier.widthIn(max = (it * 1.25f).dp) } ?: Modifier
             Image(
                 img.asImageBitmap(), b.alt, contentScale = ContentScale.Fit,
-                modifier = Modifier.width(w).aspectRatio(ratio.coerceIn(0.1f, 10f)).heightIn(max = 900.dp).clickable { onImage(b.key) },
+                modifier = w.fillMaxWidth().aspectRatio(ratio.coerceIn(0.1f, 10f)).heightIn(max = 900.dp).clickable { onImage(b.key) },
             )
         } else {
             Spacer(Modifier.height(24.dp))

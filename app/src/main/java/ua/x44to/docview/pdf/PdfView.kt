@@ -32,12 +32,14 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyListState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
@@ -366,7 +368,9 @@ private fun Page(ui: PdfUi, i: Int, w: Int, night: Boolean) {
     }
     val filter = if (night) INVERT else null
     Box(Modifier.fillMaxWidth().aspectRatio(ui.aspect(i)).background(if (night) Color.Black else Color.White)) {
-        bmp?.let { Image(it.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds, colorFilter = filter) }
+        val b = bmp
+        if (b != null) Image(b.asImageBitmap(), null, Modifier.fillMaxSize(), contentScale = ContentScale.FillBounds, colorFilter = filter)
+        else CircularProgressIndicator(Modifier.align(Alignment.Center).size(32.dp), strokeWidth = 3.dp, color = Color.Gray.copy(alpha = 0.6f))
         val tile = ui.tiles[i]
         val hits = ui.hits.filter { it.page == i }
         if (tile != null || hits.isNotEmpty()) {

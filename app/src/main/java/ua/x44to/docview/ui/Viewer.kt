@@ -6,6 +6,7 @@ import android.content.ClipData
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.animation.AnimatedVisibility
@@ -204,6 +205,8 @@ fun Viewer(o: Opened, s: Settings, appDark: Boolean, onBack: () -> Unit, onOpen:
     var busy by remember { mutableStateOf<String?>(null) }
     var image by remember { mutableStateOf<String?>(null) }
     val paper = paper(s.reading, appDark)
+    // «Назад» спершу закриває пошук, а не документ
+    BackHandler(enabled = searching) { searching = false; query = ""; searcher?.clear() }
 
     /** PDF для друку/збереження: сам файл або згенерований. */
     suspend fun asPdf(): File? = withContext(Dispatchers.IO) {

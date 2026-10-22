@@ -68,6 +68,7 @@ class ScreenshotTest {
                 settle()
                 shot("$lang-light-home")
                 open(uris.getValue("guide.pdf"))
+                settle(3000) // перша сторінка PDF на повільному емуляторі малюється не одразу
                 shot("$lang-light-pdf")
                 compose.onAllNodesWithContentDescription(t("Пошук", "Search")).onFirst().performClick()
                 settle(800)
@@ -75,7 +76,8 @@ class ScreenshotTest {
                 compose.onNode(hasSetTextAction()).performImeAction()
                 settle(5000)
                 shot("$lang-light-pdf-search")
-                back(sc); back(sc)
+                back(sc) // закриває пошук
+                back(sc) // закриває документ
                 open(uris.getValue("report.docx"))
                 shot("$lang-light-docx")
                 back(sc)
@@ -97,6 +99,7 @@ class ScreenshotTest {
                 shot("$lang-dark-home")
                 Store.settings { it.copy(pdfNight = true) }
                 open(uris.getValue("guide.pdf"))
+                settle(3000)
                 shot("$lang-dark-pdf")
                 back(sc)
                 Store.settings { it.copy(pdfNight = false) }

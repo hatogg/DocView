@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Аркуш документа з загнутим кутом і рядками різних кольорів (PDF, Word, Excel, PowerPoint) -->
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <path
+        android:fillColor="#26000000"
+        android:pathData="M38,32h24l12,12v34a4,4 0,0 1,-4 4h-32a4,4 0,0 1,-4 -4v-42a4,4 0,0 1,4 -4z" />
+    <path
+        android:fillColor="#FFFFFFFF"
+        android:pathData="M36,29h24l12,12v34a4,4 0,0 1,-4 4h-32a4,4 0,0 1,-4 -4v-42a4,4 0,0 1,4 -4z" />
+    <path
+        android:fillColor="#FFC7D3F5"
+        android:pathData="M60,29l12,12h-8a4,4 0,0 1,-4 -4z" />
+    <path
+        android:fillColor="#FFE53935"
+        android:pathData="M39,46h16a2,2 0,0 1,0 4h-16a2,2 0,0 1,0 -4z" />
+    <path
+        android:fillColor="#FF2B579A"
+        android:pathData="M39,54h26a2,2 0,0 1,0 4h-26a2,2 0,0 1,0 -4z" />
+    <path
+        android:fillColor="#FF217346"
+        android:pathData="M39,62h22a2,2 0,0 1,0 4h-22a2,2 0,0 1,0 -4z" />
+    <path
+        android:fillColor="#FFD24726"
+        android:pathData="M39,70h14a2,2 0,0 1,0 4h-14a2,2 0,0 1,0 -4z" />
+</vector>

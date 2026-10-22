@@ -48,7 +48,7 @@ fun ZoomImage(bmp: Bitmap, modifier: Modifier = Modifier, onTap: () -> Unit = {}
     var scale by remember(bmp) { mutableFloatStateOf(1f) }
     var ox by remember(bmp) { mutableFloatStateOf(0f) }
     var oy by remember(bmp) { mutableFloatStateOf(0f) }
-    val scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope { Dispatchers.Main.immediate } // інтерфейс — лише з головного потоку
     BoxWithConstraints(modifier.fillMaxSize().clipToBounds()) {
         val w = constraints.maxWidth.toFloat()
         val h = constraints.maxHeight.toFloat()

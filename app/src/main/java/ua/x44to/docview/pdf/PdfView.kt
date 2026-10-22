@@ -270,25 +270,25 @@ private val INVERT = ColorFilter.colorMatrix(
 
 @Composable
 fun PdfView(ui: PdfUi, docId: String, night: Boolean, onTap: () -> Unit, onGoto: () -> Unit) {
-    val scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope { Dispatchers.Main.immediate } // інтерфейс — лише з головного потоку
     val tap by rememberUpdatedState(onTap)
     LaunchedEffect(ui) {
         // розміри всіх сторінок — у фоні, щоб прокрутка не стрибала
-        withContext(PdfEngine.dispatcher) {
+        withContext(Dispatchers.Main.immediate) { withContext(PdfEngine.dispatcher) {
             for (i in 0 until ui.count) {
                 if (ui.engine.closed) break
                 runCatching { ui.engine.size(i) }
                 if (i % 50 == 49) withContext(Dispatchers.Main) { ui.sizesVersion++ }
             }
         }
-        ui.sizesVersion++
+        ui.sizesVersion++ }
     }
     LaunchedEffect(ui) {
         snapshotFlow { ui.list.firstVisibleItemIndex }.debounce(700).collect { Store.position(docId, it, ui.count) }
     }
     LaunchedEffect(ui) {
         snapshotFlow { listOf(ui.zoom, ui.tx, ui.ty, ui.list.firstVisibleItemIndex.toFloat(), ui.list.firstVisibleItemScrollOffset.toFloat()) }
-            .debounce(220).collect { ui.updateTiles() }
+            .debounce(220).collect { withContext(Dispatchers.Main.immediate) { ui.updateTiles() } }
     }
     BoxWithConstraints(
         Modifier.fillMaxSize().background(MaterialTheme.colorScheme.surfaceContainerHighest).clipToBounds()

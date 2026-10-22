@@ -133,7 +133,7 @@ private fun Root(appDark: Boolean) {
     val data by Store.data.collectAsStateWithLifecycle()
     val stack = remember { mutableStateListOf<Opened>() }
     val snack = remember { SnackbarHostState() }
-    val scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope { Dispatchers.Main.immediate } // інтерфейс — лише з головного потоку
     var importing by remember { mutableStateOf(false) }
     val incoming by Incoming.uris.collectAsStateWithLifecycle()
 

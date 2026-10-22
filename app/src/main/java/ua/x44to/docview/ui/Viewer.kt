@@ -171,7 +171,7 @@ private fun openWith(c: Context, f: File, name: String, format: Format) {
 @Composable
 fun Viewer(o: Opened, s: Settings, appDark: Boolean, onBack: () -> Unit, onOpen: (Opened) -> Unit) {
     val ctx = LocalContext.current
-    val scope = rememberCoroutineScope()
+    val scope = rememberCoroutineScope { Dispatchers.Main.immediate } // інтерфейс — лише з головного потоку
     val snack = remember { SnackbarHostState() }
     var attempt by remember { mutableIntStateOf(0) }
     var password by remember { mutableStateOf<String?>(null) }
@@ -198,7 +198,8 @@ fun Viewer(o: Opened, s: Settings, appDark: Boolean, onBack: () -> Unit, onOpen:
         pdfUi?.let { ui ->
             // PdfBox важкий: спершу хай намалюються сторінки, зміст — потім
             kotlinx.coroutines.delay(1500)
-            ui.toc = withContext(Dispatchers.IO) { Perf.time("pdf outline") { PdfText.outline(ctx, ui.file) } }
+            val toc = withContext(Dispatchers.IO) { Perf.time("pdf outline") { PdfText.outline(ctx, ui.file) } }
+            withContext(Dispatchers.Main.immediate) { ui.toc = toc }
         }
     }
 

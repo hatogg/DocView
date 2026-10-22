@@ -12,6 +12,9 @@ import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.aspectRatio
@@ -148,10 +151,29 @@ private fun readable(c: Int?, p: Paper): Color? {
     }
 }
 
+private fun headingScale(h: Int) = when (h) { 1 -> 1.6f; 2 -> 1.4f; 3 -> 1.22f; 4 -> 1.1f; else -> 1f }
+
+/** Найбільший відносний розмір шрифту в абзаці — від нього залежить висота рядка. */
+private fun paraScale(p: Para, doc: FlowDoc): Float {
+    val hScale = headingScale(p.heading)
+    var m = if (p.heading > 0) hScale else 1f
+    for (r in p.runs) {
+        if (r.text.isBlank()) continue
+        val rel = r.pt?.let { (it / doc.basePt).coerceIn(0.6f, 3f) } ?: continue
+        val f = when {
+            p.heading > 0 -> max(rel, hScale)
+            doc.kind == FlowKind.DOCUMENT -> rel
+            else -> 1f
+        }
+        if (f > m) m = f
+    }
+    return m
+}
+
 /** Абзац → AnnotatedString з усім оформленням і підсвіткою пошуку. */
 fun annotate(p: Para, doc: FlowDoc, paper: Paper, query: String, currentAt: Int?): AnnotatedString = buildAnnotatedString {
     val heading = p.heading
-    val hScale = when (heading) { 1 -> 1.6f; 2 -> 1.4f; 3 -> 1.22f; 4 -> 1.1f; else -> 1f }
+    val hScale = headingScale(heading)
     withStyle(
         ParagraphStyle(
             textAlign = when (p.align) { Align.CENTER -> TextAlign.Center; Align.END -> TextAlign.End; Align.JUSTIFY -> TextAlign.Justify; else -> TextAlign.Start },
@@ -221,7 +243,10 @@ fun FlowView(doc: FlowDoc, docId: String, ui: FlowUi, paper: Paper, textScale: F
             LazyColumn(
                 state = ui.list,
                 modifier = Modifier.fillMaxSize(),
-                contentPadding = PaddingValues(horizontal = if (book) 22.dp else 18.dp, vertical = 16.dp),
+                contentPadding = PaddingValues(
+                    start = if (book) 22.dp else 18.dp, end = if (book) 22.dp else 18.dp, top = 16.dp,
+                    bottom = 24.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding(),
+                ),
             ) {
                 doc.note?.let { note ->
                     item(key = "note") {
@@ -266,8 +291,11 @@ private fun ParaView(p: Para, doc: FlowDoc, paper: Paper, base: Float, query: St
         book -> base * 0.25f
         else -> base * 0.45f
     }
+    // великий шрифт (заголовок на 26 пт) з висотою рядка звичайного тексту налазив би сам на себе
+    val scale = remember(p, doc) { paraScale(p, doc) }
+    val lh = max(if (book) 1.55f else 1.45f, scale * 1.22f)
     val style = MaterialTheme.typography.bodyLarge.copy(
-        fontSize = base.sp, lineHeight = (base * if (book) 1.55f else 1.45f).sp, color = paper.fg,
+        fontSize = base.sp, lineHeight = (base * lh).sp, color = paper.fg,
         fontFamily = if (p.mono) FontFamily.Monospace else null,
     )
     val startPad = (p.indent * 18).dp

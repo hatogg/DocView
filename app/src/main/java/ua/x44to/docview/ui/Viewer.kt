@@ -14,6 +14,9 @@ import androidx.compose.animation.expandVertically
 import androidx.compose.animation.shrinkVertically
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -548,7 +551,7 @@ private fun ArchiveView(d: ArchiveDoc, onOpen: (ua.x44to.docview.core.ArcEntry) 
         Empty(Icons.Rounded.ErrorOutline, t("Архів порожній", "Empty archive"), t("У ньому немає файлів.", "There are no files in it."))
         return
     }
-    LazyColumn(Modifier.fillMaxSize()) {
+    LazyColumn(Modifier.fillMaxSize(), contentPadding = WindowInsets.navigationBars.asPaddingValues()) {
         itemsIndexed(d.entries) { _, e ->
             val name = e.path.substringAfterLast('/')
             val dir = e.path.substringBeforeLast('/', "")

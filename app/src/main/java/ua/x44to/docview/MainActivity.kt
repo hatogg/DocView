@@ -106,7 +106,7 @@ class MainActivity : ComponentActivity() {
 
     /** Числа й дати в таблицях — як прийнято в мові телефона. */
     private fun setupFormats() {
-        val loc = Locale.getDefault()
+        val loc = L.override?.let { Locale.forLanguageTag(it) } ?: Locale.getDefault()
         val sym = DecimalFormatSymbols(loc)
         NumFmt.dec = sym.decimalSeparator
         NumFmt.group = if (sym.groupingSeparator == ' ' || sym.groupingSeparator == ' ') ' ' else sym.groupingSeparator

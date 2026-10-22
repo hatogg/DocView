@@ -26,6 +26,9 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
 import androidx.compose.foundation.layout.aspectRatio
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
@@ -244,8 +247,19 @@ class PdfUi(val engine: PdfEngine, val file: File, start: Int, private val ctx: 
     }
 }
 
+/**
+ * Нічний режим: інверсія яскравості з поворотом відтінку на 180°, тож білий папір стає темним,
+ * чорний текст — світлим, а кольори картинок лишаються впізнаваними (синє небо не стає помаранчевим).
+ */
 private val INVERT = ColorFilter.colorMatrix(
-    ColorMatrix(floatArrayOf(-1f, 0f, 0f, 0f, 255f, 0f, -1f, 0f, 0f, 255f, 0f, 0f, -1f, 0f, 255f, 0f, 0f, 0f, 1f, 0f)),
+    ColorMatrix(
+        floatArrayOf(
+            0.574f, -1.430f, -0.144f, 0f, 255f,
+            -0.426f, -0.430f, -0.144f, 0f, 255f,
+            -0.426f, -1.430f, 0.856f, 0f, 255f,
+            0f, 0f, 0f, 1f, 0f,
+        ),
+    ),
 )
 
 @Composable
@@ -344,7 +358,7 @@ fun PdfView(ui: PdfUi, docId: String, night: Boolean, onTap: () -> Unit, onGoto:
         LazyColumn(
             state = ui.list,
             userScrollEnabled = ui.zoom <= 1.01f,
-            contentPadding = PaddingValues(vertical = 8.dp),
+            contentPadding = PaddingValues(top = 8.dp, bottom = 8.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding()),
             verticalArrangement = Arrangement.spacedBy(8.dp),
             modifier = Modifier.fillMaxSize().graphicsLayer {
                 scaleX = ui.zoom; scaleY = ui.zoom; translationX = ui.tx; translationY = ui.ty

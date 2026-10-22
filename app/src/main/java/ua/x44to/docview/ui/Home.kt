@@ -9,6 +9,10 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
+import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.asPaddingValues
+import androidx.compose.foundation.layout.navigationBars
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -115,7 +119,7 @@ fun Home(d: Data, snack: SnackbarHostState, onPick: () -> Unit, onOpen: (Recent)
     val present = Filter.entries.filter { f -> f == Filter.ALL || d.recents.any { f.matches(it) } }
 
     Box(Modifier.fillMaxSize()) {
-        LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 32.dp)) {
+        LazyColumn(Modifier.fillMaxSize(), contentPadding = PaddingValues(bottom = 32.dp + WindowInsets.navigationBars.asPaddingValues().calculateBottomPadding())) {
             item {
                 Row(Modifier.fillMaxWidth().statusBarsPadding().padding(start = 20.dp, end = 4.dp, top = 8.dp), verticalAlignment = Alignment.CenterVertically) {
                     Column(Modifier.weight(1f)) {
@@ -180,7 +184,7 @@ fun Home(d: Data, snack: SnackbarHostState, onPick: () -> Unit, onOpen: (Recent)
                 Empty(Icons.Rounded.Search, t("Нічого не знайдено", "Nothing found"), t("Спробуйте інший фільтр.", "Try another filter."))
             }
         }
-        SnackbarHost(snack, Modifier.align(Alignment.BottomCenter).padding(16.dp))
+        SnackbarHost(snack, Modifier.align(Alignment.BottomCenter).navigationBarsPadding().padding(16.dp))
     }
     if (settings) SettingsDialog(d) { settings = false }
 }

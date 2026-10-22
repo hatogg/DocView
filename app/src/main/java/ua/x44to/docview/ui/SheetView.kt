@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyColumn
@@ -122,7 +123,7 @@ class SheetUi(val doc: SheetDoc, startPos: Int) : SearchState(), Searcher {
 
 @Composable
 fun SheetView(doc: SheetDoc, docId: String, ui: SheetUi, paper: Paper) {
-    Column(Modifier.fillMaxSize().background(paper.bg)) {
+    Column(Modifier.fillMaxSize().background(paper.bg).navigationBarsPadding()) {
         if (doc.sheets.isEmpty()) {
             Empty(Icons.Rounded.Info, t("Порожня книга", "Empty workbook"), t("У файлі немає аркушів з даними.", "The file has no sheets with data."))
             return@Column

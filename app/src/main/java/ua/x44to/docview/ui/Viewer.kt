@@ -101,6 +101,7 @@ import ua.x44to.docview.core.blockText
 import ua.x44to.docview.data.L
 import ua.x44to.docview.data.Opened
 import ua.x44to.docview.data.Opener
+import ua.x44to.docview.data.Perf
 import ua.x44to.docview.data.Settings
 import ua.x44to.docview.data.Store
 import ua.x44to.docview.data.t
@@ -191,7 +192,11 @@ fun Viewer(o: Opened, s: Settings, appDark: Boolean, onBack: () -> Unit, onOpen:
     val slideUi = remember(doc) { (doc as? SlideDoc)?.let { SlideUi(it, o.id, o.recent.pos) } }
     val searcher: Searcher? = pdfUi ?: flowUi ?: sheetUi ?: slideUi
     LaunchedEffect(pdfUi) {
-        pdfUi?.let { ui -> ui.toc = withContext(Dispatchers.IO) { PdfText.outline(ctx, ui.file) } }
+        pdfUi?.let { ui ->
+            // PdfBox важкий: спершу хай намалюються сторінки, зміст — потім
+            kotlinx.coroutines.delay(1500)
+            ui.toc = withContext(Dispatchers.IO) { Perf.time("pdf outline") { PdfText.outline(ctx, ui.file) } }
+        }
     }
 
     var searching by remember { mutableStateOf(false) }
@@ -356,13 +361,13 @@ private fun loadDoc(ctx: Context, o: Opened, password: String?): Load {
                 }
                 val f = if (unlocked.exists()) unlocked else o.file
                 try {
-                    Load.Ready(ua.x44to.docview.core.NativeDoc(o.name, Format.PDF), PdfEngine(f))
+                    Load.Ready(ua.x44to.docview.core.NativeDoc(o.name, Format.PDF), Perf.time("pdf open") { PdfEngine(f) })
                 } catch (e: SecurityException) {
                     Load.Password(password != null)
                 }
             }
             Format.UNKNOWN -> Load.Error(t("Цей тип файлу DocView не відкриває.", "DocView can't open this type of file."))
-            else -> Load.Ready(Parser.open(o.file, o.name, o.format))
+            else -> Load.Ready(Perf.time("parse ${o.format} ${o.recent.size} B") { Parser.open(o.file, o.name, o.format) })
         }
     } catch (e: DocException) {
         Load.Error(

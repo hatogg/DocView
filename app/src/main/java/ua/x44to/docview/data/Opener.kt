@@ -40,7 +40,9 @@ object Opener {
         return name!! to size
     }
 
-    fun import(c: Context, uri: Uri): Opened {
+    fun import(c: Context, uri: Uri): Opened = Perf.time("import") { importNow(c, uri) }
+
+    private fun importNow(c: Context, uri: Uri): Opened {
         val (name, _) = nameOf(c, uri)
         val tmp = File(c.cacheDir, "import.tmp")
         val md = MessageDigest.getInstance("SHA-1")

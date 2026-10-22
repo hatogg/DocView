@@ -17,6 +17,7 @@ demo battery -e level 100 -e plugged false
 demo network -e wifi show -e level 4 -e mobile show -e datatype none -e level 4
 demo notifications -e visible false
 adb logcat -c || true
+adb shell setprop log.tag.DocView DEBUG  # журнал швидкодії застосунку (див. data/Perf.kt)
 set +e
 adb shell am instrument -w -e class ua.x44to.docview.ScreenshotTest \
   ua.x44to.docview.test/androidx.test.runner.AndroidJUnitRunner | tee instrument.log
@@ -25,6 +26,7 @@ grep -q "OK (1 test)" instrument.log && ok=1
 mkdir -p docs/screens
 adb exec-out run-as ua.x44to.docview tar -cf - files/screens | tar -xf - -C docs/screens --strip-components=2
 ls -la docs/screens
+adb logcat -d -s DocView:D > perf.log || true
 if [ "$ok" != 1 ]; then
   # для розбору: журнал падіння і що встигло знятися
   adb logcat -d -b crash > crash.log

@@ -204,15 +204,20 @@ class XmlReader(private val s: String, private val html: Boolean = false) {
         )
 
         fun decode(s: String, from: Int, to: Int): String {
-            val amp = s.indexOf('&', from)
-            if (amp < 0 || amp >= to) return s.substring(from, to)
+            // шукаємо «&» лише в межах значення: s.indexOf пробіг би весь документ до кінця,
+            // і на кожному атрибуті розбір ставав би квадратичним
+            var amp = -1
+            for (k in from until to) if (s[k] == '&') { amp = k; break }
+            if (amp < 0) return s.substring(from, to)
             val sb = StringBuilder(to - from)
-            var i = from
+            sb.append(s, from, amp)
+            var i = amp
             while (i < to) {
                 val c = s[i]
                 if (c == '&') {
-                    val semi = s.indexOf(';', i + 1)
-                    if (semi in (i + 2)..minOf(to - 1, i + 12)) {
+                    var semi = -1
+                    for (k in i + 2..minOf(to - 1, i + 12)) if (s[k] == ';') { semi = k; break }
+                    if (semi > 0) {
                         val ent = s.substring(i + 1, semi)
                         val rep: String? = if (ent.startsWith("#")) {
                             val code = if (ent.startsWith("#x") || ent.startsWith("#X")) ent.substring(2).toIntOrNull(16) else ent.substring(1).toIntOrNull()

@@ -2,6 +2,8 @@ package ua.x44to.docview
 
 import android.graphics.Bitmap
 import android.net.Uri
+import androidx.compose.ui.semantics.ProgressBarRangeInfo
+import androidx.compose.ui.test.hasProgressBarRangeInfo
 import androidx.compose.ui.test.hasSetTextAction
 import androidx.compose.ui.test.junit4.createEmptyComposeRule
 import androidx.compose.ui.test.onAllNodesWithContentDescription
@@ -68,7 +70,6 @@ class ScreenshotTest {
                 settle()
                 shot("$lang-light-home")
                 open(uris.getValue("guide.pdf"))
-                settle(3000) // перша сторінка PDF на повільному емуляторі малюється не одразу
                 shot("$lang-light-pdf")
                 compose.onAllNodesWithContentDescription(t("Пошук", "Search")).onFirst().performClick()
                 settle(800)
@@ -99,7 +100,6 @@ class ScreenshotTest {
                 shot("$lang-dark-home")
                 Store.settings { it.copy(pdfNight = true) }
                 open(uris.getValue("guide.pdf"))
-                settle(3000)
                 shot("$lang-dark-pdf")
                 back(sc)
                 Store.settings { it.copy(pdfNight = false) }
@@ -114,7 +114,21 @@ class ScreenshotTest {
 
     private fun open(uri: Uri) {
         Incoming.uris.value = listOf(uri)
-        settle(3500)
+        settle(1500)
+        waitLoaded()
+        settle(800)
+    }
+
+    /** Чекаємо, доки зникнуть усі «крутилки»: розбір документа, сторінки PDF. */
+    private fun waitLoaded() {
+        val loading = hasProgressBarRangeInfo(ProgressBarRangeInfo.Indeterminate)
+        val t0 = System.currentTimeMillis()
+        try {
+            compose.waitUntil(30_000) { compose.onAllNodes(loading).fetchSemanticsNodes().isEmpty() }
+        } catch (e: Throwable) {
+            android.util.Log.w("DocView", "still loading after 30 s", e)
+        }
+        android.util.Log.d("DocView", "loaded in ${System.currentTimeMillis() - t0} ms")
     }
 
     private fun back(sc: ActivityScenario<MainActivity>) {

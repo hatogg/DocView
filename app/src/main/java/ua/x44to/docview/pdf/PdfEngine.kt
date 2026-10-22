@@ -14,6 +14,7 @@ import com.tom_roush.pdfbox.pdmodel.interactive.documentnavigation.outline.PDOut
 import com.tom_roush.pdfbox.text.PDFTextStripper
 import com.tom_roush.pdfbox.text.TextPosition
 import kotlinx.coroutines.asCoroutineDispatcher
+import ua.x44to.docview.data.Perf
 import java.io.File
 import java.util.concurrent.Executors
 
@@ -38,14 +39,14 @@ class PdfEngine(val file: File) : AutoCloseable {
     /** Уся сторінка шириною [w] пікселів. */
     fun render(i: Int, w: Int): Bitmap? = synchronized(this) {
         if (closed) return null
-        renderer.openPage(i).use { p ->
+        Perf.time("pdf render p$i w$w") { renderer.openPage(i).use { p ->
             sizes[i] = intArrayOf(p.width, p.height)
             val h = (w.toLong() * p.height / p.width).toInt().coerceIn(1, 8000)
             val bmp = Bitmap.createBitmap(w.coerceIn(1, 4000), h, Bitmap.Config.ARGB_8888)
             bmp.eraseColor(Color.WHITE)
             p.render(bmp, null, null, PdfRenderer.Page.RENDER_MODE_FOR_DISPLAY)
             bmp
-        }
+        } }
     }
 
     /**
